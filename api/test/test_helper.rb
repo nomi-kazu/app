@@ -10,7 +10,10 @@ class ActiveSupport::TestCase
   parallelize_setup do |worker|
     load "#{Rails.root}/db/seeds.rb"
   end
-  
+
   parallelize(workers: :number_of_processors)
 
+  def active_user
+    User.find_by(activated: true)
+  end
 end
