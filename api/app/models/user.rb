@@ -1,4 +1,4 @@
-require 'validator/emial_validator'
+require 'validator/email_validator'
 
 class User < ApplicationRecord
   before_validation :downcase_email
@@ -35,8 +35,8 @@ class User < ApplicationRecord
 
   private
 
-    # email小文字化
-    def downcase_email
-      self.email.downcase! if email
-    end
+  # email小文字化
+  def downcase_email
+    self.email.downcase! if email
+  end
 end
