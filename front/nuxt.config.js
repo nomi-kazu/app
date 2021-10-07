@@ -82,7 +82,12 @@ export default {
         ja: require('./locales/ja.json'),
         en: require('./locales/en.json')
       }
-    }
+    },
+    strategy: 'no_prefix'
+  },
+
+  publicRuntimeConfig: {
+    appName: process.env.APP_NAME
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
