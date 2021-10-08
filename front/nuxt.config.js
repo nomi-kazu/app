@@ -74,6 +74,7 @@ export default {
   i18n: {
     locales: ['ja', 'en'],
     defaultLocale: 'ja',
+    strategy: 'no_prefix',
     vueI18n: {
       fallbackLocale: 'ja',
       // silentTranslationWarn: true,
@@ -82,8 +83,7 @@ export default {
         ja: require('./locales/ja.json'),
         en: require('./locales/en.json')
       }
-    },
-    strategy: 'no_prefix'
+    }
   },
 
   publicRuntimeConfig: {
