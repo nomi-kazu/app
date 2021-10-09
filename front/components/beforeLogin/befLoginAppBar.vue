@@ -15,6 +15,10 @@
       class="hidden-mobile-and-down"
     />
 
+    <breadcrumbs
+      v-if="notTopPage"
+    />
+
     <v-spacer />
 
     <signup-link />
@@ -38,6 +42,11 @@ export default {
   data ({ $store }) {
     return {
       appBarHeight: $store.state.styles.beforeLogin.appBarHeight
+    }
+  },
+  computed: {
+    notTopPage () {
+      return this.$route.name !== 'index'
     }
   }
 }
