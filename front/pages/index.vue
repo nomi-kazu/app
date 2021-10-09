@@ -102,7 +102,7 @@
             item-key="id"
             hide-default-footer
           >
-            <template #item.name="{ item }">
+            <template #[`item.name`]="{ item }">
               <nuxt-link
                 :to="$my.projectLinkTo(item.id)"
                 class="text-decoration-none"
@@ -110,7 +110,7 @@
                 {{ item.name }}
               </nuxt-link>
             </template>
-            <template #item.updatedAt="{ item }">
+            <template #[`item.updatedAt`]="{ item }">
               {{ $my.format(item.updatedAt) }}
             </template>
           </v-data-table>
