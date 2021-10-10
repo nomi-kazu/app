@@ -28,7 +28,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    'plugins/axios'
+    'plugins/axios',
+    'plugins/myInject'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -56,7 +57,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -74,6 +75,7 @@ export default {
   i18n: {
     locales: ['ja', 'en'],
     defaultLocale: 'ja',
+    strategy: 'no_prefix',
     vueI18n: {
       fallbackLocale: 'ja',
       // silentTranslationWarn: true,
@@ -83,6 +85,10 @@ export default {
         en: require('./locales/en.json')
       }
     }
+  },
+
+  publicRuntimeConfig: {
+    appName: process.env.APP_NAME
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

@@ -1,11 +1,18 @@
 <template>
   <v-app>
-    <nuxt />
+    <logged-in-header />
+    <v-main>
+      <nuxt />
+    </v-main>
   </v-app>
 </template>
 
 <script>
-export default {
+import loggedInHeader from '~/components/loggedIn/loggedInHeader'
 
+export default {
+  components: {
+    loggedInHeader
+  }
 }
 </script>

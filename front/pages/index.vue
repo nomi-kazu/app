@@ -1,109 +1,175 @@
 <template>
-  <v-container fluid>
-    <v-card
-      flat
-      tile
-      color="transparent"
-    >
-      <v-card-title>
-        nuxt-i18nの検証
-      </v-card-title>
-      <v-card-text>
-        <v-simple-table dense>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th>en</th>
-                <th>ja</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(path, i) in ['signup', 'login']"
-                :key="`path-${i}`"
-              >
-                <td>{{ path }}</td>
-                <td>{{ $t(`title.${path}`) }}</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
-      </v-card-text>
-      <v-card-title>
-        Usersテーブルの取得
-      </v-card-title>
-      <v-card-text>
-        <v-simple-table dense>
-          <template
-            v-if="users.length"
-            v-slot:default
-          >
-            <thead>
-              <tr>
-                <th
-                  v-for="(key, i) in userKeys"
-                  :key="`key-${i}`"
-                >
-                  {{ key }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(user, i) in users"
-                :key="`user-${i}`"
-              >
-                <td>{{ user.id }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ dateFormat(user.created_at) }}</td>
-              </tr>
-            </tbody>
-          </template>
-          <template v-else>
-            ユーザーが存在しません
-          </template>
-        </v-simple-table>
-      </v-card-text>
-      <v-card-title>
-        Vuetifyの導入（オリジナルカラーの確認）
-      </v-card-title>
-      <v-card-text>
-        <v-btn
-          v-for="(color, i) in colors"
-          :key="`color-${i}`"
-          :color="color"
-          class="mr-2"
+  <div id="logged-in-home">
+    <v-parallax>
+      <v-img
+        :src="homeImg"
+        alt="homeImg"
+        :aspect-ratio="16/9"
+        gradient="to top right, rgba(100,115,201,.33), rgba(25,32,72,.7)"
+      >
+        <v-container
+          fill-height
         >
-          {{ color }}
-        </v-btn>
-      </v-card-text>
-    </v-card>
-  </v-container>
+          <v-row
+            justify="center"
+            align="center"
+          >
+            <v-col
+              cols="12"
+              :sm="container.sm"
+              :md="container.md"
+            >
+              <v-card-title class="white--text">
+                最近のプロジェクト
+              </v-card-title>
+
+              <v-divider dark />
+
+              <v-row
+                align="center"
+              >
+                <v-col
+                  cols="12"
+                  :sm="card.sm"
+                  :md="card.md"
+                >
+                  <v-btn
+                    block
+                    :height="card.height"
+                    :elevation="card.elevation"
+                  >
+                    <div>
+                      <v-icon
+                        size="24"
+                        color="myblue"
+                        class="my-2"
+                      >
+                        mdi-plus
+                      </v-icon>
+                      <div class="caption myblue--text">
+                        プロジェクトを追加
+                      </div>
+                    </div>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col
+              v-for="(project, i) in recentProjects.slice(0, 2)"
+              :key="`card-project-${i}`"
+              cols="12"
+              :sm="card.sm"
+              :md="card.md"
+            >
+              <v-card
+                block
+                :height="card.height"
+                :elevation="card.elevation"
+                :to="$my.projectLinkTo(project.id)"
+                class="v-btn text-capitalize"
+              >
+                <v-card-title class="pb-1 d-block text-truncate">
+                  {{ project.name }}
+                </v-card-title>
+                <v-card-text class="caption">
+                  <v-icon size="14">
+                    mdi-update
+                  </v-icon>
+                  {{ $my.format(project.updatedAt) }}
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-img>
+    </v-parallax>
+    <v-container>
+      <v-row justify="center">
+        <v-col
+          cols="12"
+          :sm="container.sm"
+          :md="container.md"
+        >
+          <v-card-title>
+            全てのプロジェクト
+          </v-card-title>
+
+          <v-divider class="mb-4" />
+
+          <v-data-table
+            :headers="tableHeaders"
+            :items="recentProjects"
+            item-key="id"
+            hide-default-footer
+          >
+            <template #[`item.name`]="{ item }">
+              <nuxt-link
+                :to="$my.projectLinkTo(item.id)"
+                class="text-decoration-none"
+              >
+                {{ item.name }}
+              </nuxt-link>
+            </template>
+            <template #[`item.updatedAt`]="{ item }">
+              {{ $my.format(item.updatedAt) }}
+            </template>
+          </v-data-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
+import homeImg from '~/assets/images/loggedIn/home.png'
+
 export default {
-  async asyncData ({ $axios }) {
-    let users = []
-    await $axios.$get('/api/v1/users').then(res => (users = res))
-    const userKeys = Object.keys(users[0] || {})
-    return { users, userKeys }
+  layout ({ store }) {
+    return store.state.loggedIn ? 'loggedIn' : 'welcome'
   },
   data () {
     return {
-      colors: ['primary', 'info', 'success', 'warning', 'error', 'background']
+      homeImg,
+      container: {
+        sm: 10,
+        md: 8
+      },
+      card: {
+        sm: 6,
+        md: 4,
+        height: 120,
+        elevation: 4
+      },
+      tableHeaders: [
+        {
+          text: '名前',
+          value: 'name'
+        },
+        {
+          text: '更新日',
+          width: 150,
+          value: 'updatedAt'
+        }
+      ]
     }
   },
   computed: {
-    dateFormat () {
-      return (date) => {
-        const dateTimeFormat = new Intl.DateTimeFormat(
-          'ja', { dateStyle: 'medium', timeStyle: 'short' }
-        )
-        return dateTimeFormat.format(new Date(date))
-      }
+    recentProjects () {
+      const copyProjects = Array.from(this.$store.state.projects)
+      return copyProjects.sort((a, b) => {
+        if (a.updatedAt > b.updatedAt) { return -1 }
+        if (a.updatedAt < b.updatedAt) { return 1 }
+        return 0
+      })
     }
   }
 }
 </script>
+
+<style lang="scss">
+#logged-in-home {
+  .v-parallax__content {
+    padding: 0;
+  }
+}
+</style>
